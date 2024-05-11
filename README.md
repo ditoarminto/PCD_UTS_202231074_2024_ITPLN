@@ -3,6 +3,17 @@
 
 Sebuah projek yang dibuat untuk memenuhi tugas UTS praktikum yang diberikan kepada mahasiswa matakuliah Pengolahan Citra. Terdapat proses-proses seperti deteksi warna, pengaturan kontras, pengaturan kecerahan, dan juga manipulasi gambar RGB agar dapat menampilkan gambar dengan warna yang diinginkan seperti gambar hasil saluran Red, gambar hasil saluran green, maupun gambar hasil saluran blue.
 
+## Landasan Teori
+* Pemrosesan Gambar Digital (Digital Image Processing): Semua program tersebut melibatkan pemrosesan gambar digital, yang merupakan cabang dari ilmu komputer vision. 
+
+* OpenCV: OpenCV (Open Source Computer Vision Library) adalah pustaka populer yang digunakan untuk pemrosesan gambar dan komputer vision.
+
+* NumPy: NumPy adalah pustaka Python yang digunakan untuk komputasi numerik, terutama operasi pada array dan matriks. 
+
+* Matplotlib: Matplotlib adalah pustaka visualisasi data Python yang digunakan untuk membuat plot, grafik, dan visualisasi lainnya.
+
+* Teori Warna (Color Theory): Terdapat beberapa penerapan teori warna yang umumnya digunakan pada dunia fotografi dan citra, RGB ( Red-Green-Blue ) dan HSV ( Hue-Saturation-Value ).
+
 ## 1) Deteksi Warna Pada Citra
 
 Dalam manipulasi gambar tentu setiap gambar atau setiap foto maupun dengan objek yang sama bila difoto akan menghasilkan kualitas maupun ketajaman warna maupun cahaya yang berbeda oleh sebab itu dalam proses no 1 ini cukup sulit sebab perlu mendapatkan foto yang memiliki pencahayaan yang merata serta menampilkan tingkat warna yang sesuai dengan aslinya, bila ada sedikit perbedaan warna dapat mempengaruhi hasil otuputnya ini tentu mempengaruhi hasil dari projek ini.
@@ -102,6 +113,8 @@ plt.show()
 ```
 - Hal yang sama berlaku untuk kedua program ini kita hanya akan memfokuskan pada seleksi warna biru dan hijau. kemudian hasil akan di ubah ke bentuk grayscale dengan cmap = 'gray' lalu grafik histogram akan ditampilkan.
 
+- Grafik Histogram ini menampilkan distribusi frekuensi intensitas piksel warna merah, hijau, maupun biru pada gambar yang sedang digunakan. Pada rentang 0 - 255 terdapat pada sumbu X yang mewakili intesitas warna tersebut. Jadi pada saat terdapat sisi yang menonjol akan menunjukan intesitas dari warna yang dipilih, sedangkan bagian lembah menunjukan direntang itu warna tidak ada atau memiliki intesitas rendah.
+
 ## Menampilkan keempat gambar pada 4 plot
 ```python
 plt.subplot(2, 2, 1)
@@ -140,34 +153,34 @@ import numpy as np
 import matplotlib.pyplot as plt
 ```
 * Mengimport beberapa library cv2, numpy, dan matplotlib tiap tiap modul punya fungsi dan kegunaan tersendiri pada program. cv2 atau OpenCV digunakan untuk membaca, menuis, dan memanipulasi gambar dan video. NumPy digunakan bersamaan dengan openCV untuk manipulasi array dan matriks, serta melakukan operasi matematika dan statistik. Lalu matplotlib digunakan untuk membuat plot, grafik, dan visualisasi lainnya.
-## Baca gambar
+## Membaca gambar
 ```python
 img = cv2.imread('dk.jpg')
 ```
 * Perintah tersebut menggunakan fungsi `cv2.imread()` dari OpenCV untuk membaca gambar yang disimpan dengan nama "dk.jpg", dikembalikan dalam bentuk array NumPy.
-## Convert citra ke grayscale
+## Konversi citra ke bentuk grayscale
 ```python
 gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 ```
 * Parameter `cv2.COLOR_RGB2GRAY` berfungsi untuk konversi citra ke gray, dengan fungsi `cv2.cvtColor()` lalu ditampung ke gray.
-## Inisialisasi subplot
+## Pembuatan variabel untuk plot
 ```python
 fig, axs = plt.subplots(2, 2, figsize=(10,10))
 ```
 * Pada perintah diatas, kita menciptakan sebuah grid atau bingkai subplot dengan 2 baris dan 2 kolom menggunakan `plt.subplots()`, lalu ukuran plot disesuaikan dengan parameter `figsize=(10,10)`.
-## Ambang batas untuk mendapatkan citra biner (none)
+## Ambang batas untuk citra biner
 ```python
 (thresh, binary1) = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY)
 axs[0,0].imshow(binary1, cmap = 'gray')
 axs[0,0].set_title('NONE')
 ```
 * Perintah diatas melakukan proses thresholding pada gambar dalam skala abu-abu (gray) menggunakan fungsi `cv2.threshold()` dari modul OpenCV. Thresholding digunakan untuk mengonversi gambar ke dalam gambar biner, di mana setiap piksel akan diberi nilai 0 (hitam) atau 255 (putih) berdasarkan nilai ambang tertentu.
-## Convert citra ke HSV
+## Konversi ke HSV
 ```python
 image_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 ```
 * Baris kode ini menggunakan fungsi `cv2.cvtColor()` dari modul OpenCV untuk mengonversi gambar yang telah dibaca sebelumnya (img) dari format warna BGR (Blue-Green-Red) menjadi format warna HSV (Hue-Saturation-Value).
-## Definisikan range warna biru dalam HSV
+## Pendefinisian warna biru ke HSV
 ```python
 blue_lower = np.array([100, 50, 50])
 blue_upper = np.array([140, 255, 255])
@@ -176,7 +189,7 @@ blue_upper = np.array([140, 255, 255])
 
 * blue_upper adalah array NumPy yang menyimpan nilai maksimum untuk setiap komponen warna dalam format HSV. Nilai-nilai ini menentukan batas atas untuk deteksi warna biru.
 
-## Membuat mask untuk warna biru
+## Membuat mask warna biru
 ```python
 mask_blue = cv2.inRange(image_hsv, blue_lower, blue_upper)
 axs[0,1].imshow(mask_blue, cmap='gray')
@@ -184,14 +197,14 @@ axs[0,1].set_title('BLUE')
 ```
 * `cv2.inRange(image_hsv, blue_lower, blue_upper)` Merupakan perintah untuk mengambil gambar dalam format HSV (image_hsv) dan dua array NumPy yang mewakili batas bawah (blue_lower) dan batas atas (blue_upper) untuk warna biru. Fungsi ini menghasilkan sebuah mask biner di mana piksel yang masuk dalam rentang warna biru akan diatur menjadi 255 (putih), sedangkan piksel yang tidak masuk dalam rentang tersebut akan diatur menjadi 0 (hitam).
 
-## Ambang batas untuk mendapatkan citra biner (red-blue)
+## Ambang batas untuk citra biner (red-blue)
 ```python
 (thresh, binary3) = cv2.threshold(gray, 65, 255, cv2.THRESH_BINARY)
 axs[1,0].imshow(binary3, cmap = 'binary')
 axs[1,0].set_title('RED-BLUE')
 ```
 * `cv2.threshold(gray, 65, 255, cv2.THRESH_BINARY)` mengambil gambar dalam skala abu-abu (gray) sebagai input. Lalu membagi piksel menjadi dua kelas berdasarkan nilai ambang yang telah ditentukan yaitu 65. Jika nilai piksel di atas nilai ambang, maka piksel tersebut akan diatur menjadi 255 (putih), jika tidak, maka akan diatur menjadi 0 (hitam).
-## Ambang batas untuk mendapatkan citra biner (red-green-blue)
+## Ambang batas untuk citra biner (red-green-blue)
 ```python
 (thresh, binary4) = cv2.threshold(gray, 105, 255, cv2.THRESH_BINARY)
 axs[1,1].imshow(binary4, cmap = 'binary')
@@ -200,3 +213,5 @@ axs[1,1].set_title('RED-GREEN-BLUE')
 plt.show()
 ```
 * Hal yang sama berlaku untuk perintah ini, yang membedakan hanya nilai ambang batas yaitu 105, lalu diberi judul "RED-GREEN-BLUE".
+
+
